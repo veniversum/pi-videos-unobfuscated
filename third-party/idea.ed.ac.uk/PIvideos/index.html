@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+.links line {
+  stroke: #999;
+  stroke-opacity: 0.6;
+}
+iframe {width:60%;height:600px }
+
+svg {float:left}
+
+.nodes circle {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+input[type=range]
+{
+    float:left;
+    writing-mode: bt-lr; /* IE */
+    -webkit-appearance: slider-vertical; /* WebKit */
+    width: 8px;
+    height: 600px;
+    padding: 0 5px;
+}
+</style>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML'></script>
+<title>Bradley-Terry ranking of PI Videos</title>
+<body>
+<h1>PI videos 2017</h1>
+<p>This page is under development it gives visualisations of the
+rankings of PI videos derived from the raw peer ranking data, using a modified Bradley-Terry model.
+</p>
+<p>Each dot represents a video. Click on a dot to see the relevant
+homepage presentation of the video in the iframe (the inclusion of
+this content in this page is under development and will be
+will be improved). The vertical positions of each dot represents (on a
+log scale) the
+coefficient
+for this video in a Bradley-Terry-Zermelo choice model. For further
+details of the model, see below.</p>
+<p>Videos were peer-ranked according to three criteria: relevance,
+content, presentation. The check boxes allow you to select any subset
+of these. The dots move vertically towards a maximum likelihood model
+given the selected peer rankings. A further checkbox
+allows you to stop (and restart) the simulation.
+</p>
+ <p>Energy <span
+class="energy"> </span> <input type="checkbox" checked="checked"
+id="relevance" /> <label for ="relevance">Relevance</label> <input
+type="checkbox" checked="checked" id="content" /> <label for
+="content">Content</label> <input type="checkbox" checked="checked"
+id="presentation" /> <label for
+="presentation">Presentation</label> <input id="stop" type="checkbox">Stop</input></p> <input type="range"
+id="energy" min="0" max="500"/>
+
+<svg width="300" height="600"> </svg> <iframe id="content"
+width="400px" src = ""></iframe> <p>The Zermelo-Bradley-Terry
+distribution is a generative model for a set of binary rankings, first
+introduced by Zermelo in 1929. In this model, the odds that
+individuals \(i,j\) are ranked \(i\succ j\) are given by
+\(\gamma_i/\gamma_j\). Equivalently, \(P(i\succ j) =
+\frac{\gamma_i}{\gamma_i+\gamma_j}\).  </p>
+<p>This work was extended
+by Luce to study rankings. For example, if we take three individuals,
+\(i,j,k\) then the probability of the ranking \(i\succ j\succ k\) is
+given by \[ P(i\succ j\succ k) = \frac{\gamma_i}{(\gamma_i+\gamma_j+
+\gamma_k)}\cdot\frac{\gamma_j}{(\gamma_i+\gamma_j)}\quad\text{and,
+more generally,}\quad P(x_1\succ x_2\succ\ldots\succ x_{n-1}\succ x_n)
+=\prod_{k\lt n}\frac{\gamma_k}{\sum_{i=k}^n\gamma_i},\quad\text{where
+$\gamma_i$ is the strength of $x_i$,}\] gives the
+probability of a given ranking of \(n\) individuals.  </p> <p>Here,
+the individuals are videos, and we have a sample of partial rankings
+based on three separate criteria: relevance, presentation, and
+content. We assume that these rankings are drawn from a distribution
+based on Bradley-Terry
+parameters.</p> <p> In total, we have \(132\) videos and \(119\times 3\)
+rankings. Each marker is given a set of nine videos. These sets are
+designed to give a multiple cover of the collection of videos, with minimal
+intersections (a nine-fold cover by design, but a few
+markers failed to deliver). For each criterion this set is ranked on triage scale, on
+which the videos are classed as below average (Red), average (Amber),
+or above average (Green). Markers are required to give a ranking: at
+least three videos must be ranked Red and at least three Green.</p>
+
+<p>Our distribution includes five factors. \[ P(G\succ A\succ R)\sim
+\left(\frac{\mathcal{G}}{\mathcal{G+A+R}}\right)^{\lvert
+G\rvert}\cdot\left(\frac{\mathcal{A}}{\mathcal{A+R}}\right)^{\lvert
+A\rvert}\cdot \mathcal{G}^{\star}\cdot \mathcal{A}^{\star}\cdot \mathcal{R}^{\star},\\
+\text{ where,
+}\quad\mathcal{G}^{\lvert G\rvert} = \prod_{g\in G}{\gamma_g}\quad \mathcal{A}^{\lvert A\rvert} = \prod_{a\in
+A}{\gamma_a}\quad \mathcal{R}^{\lvert R\rvert} = \prod_{r\in
+R}{\gamma_r},\\
+\mathcal{G}^{\star} = \prod_{g\in
+G}\frac{{(\gamma_g\cdot \mathcal{G})^{1/2}}}{(\gamma_g + \mathcal{G})}\quad
+\mathcal{A}^{\star} = \frac{\mathcal{A}^{\lvert A\rvert}}{\prod_{a\in
+A} (\gamma_a + \mathcal{A})}\quad \mathcal{R}^{\star} = \prod_{r\in
+R}\frac{\mathcal{R}}{ (\gamma_r + \mathcal{R})}.\]
+<!-- In this model, given a set of videos and the sizes \(n\) -->
+<!-- and \(m\) of the sets \(G, A\), that the likelihoods of choosing \(G\) -->
+<!-- as the top \(n\), and then \(A\) as the top -->
+<!-- \(m\) from those remaining, are proportional to the total weights of these -->
+<!-- subsets, relative to the total weight of the set from which they are -->
+<!-- drawn. -->
+<!-- If \(\mathcal{A}\) is empty we omit the second factor. We do not model the choice -->
+<!-- of the numbers \(n, m\). -->
+The first two factors model the ranking as attributing the (geometric) mean strength
+of the members to each set, and then making judgements that 
+\(g\in G\) dominates both \(\mathcal{A}\) and  \(\mathcal{R}\), using
+this mean strength for each comparison, and similarly,
+that each \(a\in A\) dominates \(\mathcal{R}\), based on these mean strengths.
+</p>
+<p>The remaining factors express the cohesion of each chosen set of
+videos. For each set \(X\in \{R, A, G\}\), they correspond to adding
+an 'observation' that ranks  \(x\in X\) both above and below a
+hypothetical phantom video endowed with the mean strength,
+\(\mathcal{X}\). We show these in three equivalent forms; the first
+shows this as the square root of a product of probabilities, the final form is more
+convenient for the calculations below.</p>
+<p>
+The log-likelihood \(\ell(G\succ A\succ R)\) is given by
+\[\begin{aligned} \ell(G\succ A\succ R) &=  \lvert G\rvert\left(\ln(\mathcal{G}) -
+\ln(\mathcal{G+A+R})\right)  + \lvert A\rvert\left(\ln(\mathcal{A})
+-\ln(\mathcal{A+R})\right)\\
+&+\sum_{g\in G}\left(\ln(\mathcal{G})-\ln(\gamma_g+\mathcal{G})\right) + \sum_{a\in A}\left(\ln(\mathcal{A})-\ln(\gamma_a+\mathcal{A})\right) + \sum_{r\in R}\left(\ln(\mathcal{R})-\ln(\gamma_r+\mathcal{R})\right)
+\end{aligned}\]
+
+\[\begin{align*}\frac{\partial\ell(G\succ A\succ R)}{\partial
+\gamma_g}&=\frac{\mathcal{G}}{\gamma_g}\cdot
+\left(\frac{2}{\mathcal{G}}
+-\frac{1}{\mathcal{(G+A+R)}}-\frac{1}{\lvert G\rvert}\sum_{x\in G}\frac{1}{(\mathcal{G} + \gamma_{x})}\right) - \frac{1}{\mathcal{G}+\gamma_g}\\
+\frac{\partial\ell(G\succ A\succ R)}{\partial
+\gamma_a}
+&=\frac{\mathcal{A}}{\gamma_a}\cdot\left(\frac{2}{\mathcal{A}}
+-\frac{\lvert G\rvert}{\lvert
+A\rvert\mathcal{(G+A+R)}}-\frac{1}{(\mathcal{A+R})}-\frac{1}{\lvert
+A\rvert}\sum_{y\in A}\frac{1}{(\mathcal{A} + \gamma_{y})}\right) - \frac{1}{\mathcal{A}+\gamma_a}\\
+\frac{\partial\ell(G\succ A\succ R)}{\partial \gamma_r}&=
+\frac{\mathcal{R}}{\gamma_r}\cdot\left(\frac{1}{\mathcal{R}}-\frac{\lvert G\rvert}{\lvert R\rvert\mathcal{(G+A+R)}} -
+\frac{\lvert A\rvert}{\lvert R\rvert\mathcal{(A+R)}}-\frac{1}{\lvert R\rvert}\sum_{z\in R}\frac{1}{(\mathcal{R} + \gamma_{z})}\right) - \frac{1}{\mathcal{R}+\gamma_r}
+\end{align*}\]
+<p>Following Zermelo, we use a maximum likelihood
+approach to assign the <i>strength</i> parameters \(\gamma_i\), for
+each individual, \(i\). 
+</p>
+<p>In the animation above, each node represents one video. The
+vertical position of each node represents the strength parameter for that
+video (on a log scale, base 2, so that each unit on the vertical scale
+represents  doubling of odds). The origin represents the geometric
+average strngth.</p>
+<p>The derivatives are applied as forces, which act on the nodes to
+increase the log likelihood of the model.  These forces are simulated
+to implement a search for maximum likelihood values of the parameters,
+given all the rankings. A positive force acts to move the node up; a
+negative force acts downwards.  </p> <p>If we only included the first
+two factors in our model,
+gradient ascent would make \(\gamma_r\) tend to zero, for any video \(r\)
+that is always ranked \(R\). 
+Adding the cohesion factors prevents overfitting for videos \(r\) with no
+positive, or no negative scores. The energy shown as part of the simulation is
+the negative log likelihood duer to the first two factors model. It does not include the
+energy of the phantom rankings used to regularise the model, so you
+may see an increase in energy when these effects dominate. At this
+point you can stop the simulation.</p>
+<p>You
+can click on any node to see the comparisons that rank it higher or
+lower than other videos. These comparisons are represented by arrows;
+the arrow goes from the higher-ranked video to the lower-ranked.
+higher-ranked video.  <i>For the moment only the rankings for
+presentation are shown in this way,</i> but all three criteria may be
+used, individually or in combination to drive the simulation. To
+replace the links click on another node; to remove them click on
+thebackground. </p> <p>You can drag nodes and release them to see how
+the gradient ascent returns them to their proper position. Hovering
+over a node shows an anonymised identifier
+associated with the video. Soon you will be able to click to see
+further metadata and watch the video.  </p>
+
+<script src="https://d3js.org/d3.v4.min.js"></script> <script
+src="BradleyTerry.js"> </script> </body>
